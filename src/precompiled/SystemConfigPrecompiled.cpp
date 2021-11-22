@@ -37,12 +37,13 @@ SystemConfigPrecompiled::SystemConfigPrecompiled(crypto::Hash::Ptr _hashImpl)
 {
     name2Selector[SYSCONFIG_METHOD_SET_STR] = getFuncSelector(SYSCONFIG_METHOD_SET_STR, _hashImpl);
     name2Selector[SYSCONFIG_METHOD_GET_STR] = getFuncSelector(SYSCONFIG_METHOD_GET_STR, _hashImpl);
-    m_sysValueCmp.insert(std::make_pair(
-        SYSTEM_KEY_TX_GAS_LIMIT, [](int64_t _v) -> bool { return _v > TX_GAS_LIMIT_MIN; }));
-    m_sysValueCmp.insert(std::make_pair(
-        SYSTEM_KEY_CONSENSUS_LEADER_PERIOD, [](int64_t _v) -> bool { return (_v >= 1); }));
-    m_sysValueCmp.insert(std::make_pair(
-        SYSTEM_KEY_TX_COUNT_LIMIT, [](int64_t _v) -> bool { return (_v >= TX_COUNT_LIMIT_MIN); }));
+    m_sysValueCmp.insert(std::make_pair(SYSTEM_KEY_TX_GAS_LIMIT,
+        [](int64_t _v) -> bool { return (_v >= TX_GAS_LIMIT_MIN && _v <= TX_GAS_LIMIT_MAX); }));
+    m_sysValueCmp.insert(std::make_pair(SYSTEM_KEY_CONSENSUS_LEADER_PERIOD, [](int64_t _v) -> bool {
+        return (_v >= CONSENSUS_LEADER_PERIOD_LIMIT_MIN && _v <= CONSENSUS_LEADER_PERIOD_LIMIT_MAX);
+    }));
+    m_sysValueCmp.insert(std::make_pair(SYSTEM_KEY_TX_COUNT_LIMIT,
+        [](int64_t _v) -> bool { return (_v >= TX_COUNT_LIMIT_MIN && _v <= TX_COUNT_LIMIT_MAX); }));
 }
 
 std::shared_ptr<PrecompiledExecResult> SystemConfigPrecompiled::call(
